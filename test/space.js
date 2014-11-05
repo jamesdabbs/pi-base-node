@@ -18,10 +18,19 @@ describe('Space', function () {
   it('requires authentication to create');
   it('allows logged-in users to create');
   it('validates create data');
+
   it('requires admin access to update');
+
   it('allows admins to update');
   it('validates updates');
   it('tracks revisions');
-  it('requires admin access to delete');
+
+  it('requires admin access to delete', function() {
+    Space.find(99).then(function(space) {
+      // FIXME: ensure that we reject with somethign reflecting the forbidden status
+      expect(space.delete()).to.be.rejected;
+    });
+  });
+
   it('allows admins to delete');
 });
