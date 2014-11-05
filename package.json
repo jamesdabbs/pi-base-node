@@ -1,0 +1,19 @@
+{
+  "name": "pi-base-node",
+  "version": "0.0.1",
+  "description": "A simple promise-based client for the Pi-Base API",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha -w"
+  },
+  "author": "James Dabbs",
+  "license": "ISC",
+  "dependencies": {
+    "request-promise": "^0.2.4"
+  },
+  "devDependencies": {
+    "chai": "^1.9.2",
+    "chai-as-promised": "^4.1.1",
+    "mocha": "^2.0.1"
+  }
+}
