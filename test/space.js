@@ -1,13 +1,9 @@
 'use strict';
 
-var rp = require('request-promise');
+var Space = require('../lib/space');
 
-describe('requesting', function () {
-  it('should be able to make a request', function() {
-    var s = rp('http://localhost:3000/test').then(function(response) {
-      return JSON.parse(response).status;
-    });
-
-    expect(s).to.eventually.eq("ok");
+describe('Space', function () {
+  it('can list spaces', function() {
+    expect(Space.list()).to.eventually.have.length(50);
   });
 });
