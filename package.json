@@ -9,8 +9,9 @@
   "author": "James Dabbs",
   "license": "ISC",
   "dependencies": {
-    "request-promise": "^0.2.4",
-    "underscore": "^1.7.0"
+    "lodash": "^2.4.1",
+    "qs": "^2.3.2",
+    "request-promise": "^0.2.4"
   },
   "devDependencies": {
     "chai": "^1.9.2",
