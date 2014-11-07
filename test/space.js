@@ -4,7 +4,8 @@ var PiBase = require('../lib/pi-base');
 var Space = require('../lib/space');
 
 describe('Space', function () {
-  before(PiBase.logout);
+  before(PiBase.reset);
+  beforeEach(PiBase.logout);
 
   it('can list', function() {
     expect(Space.list()).to.eventually.have.length(50);
@@ -31,7 +32,7 @@ describe('Space', function () {
   });
 
   it('requires authentication to create', function() {
-    expect(Space.create({name: 'New Space'})).to.be.rejectedWith('401');
+    expect(Space.create({name: 'New Space'})).to.be.rejectedWith(401);
   });
 
   it('allows logged-in users to create', function() {
@@ -41,17 +42,17 @@ describe('Space', function () {
 
   it('validates create data', function() {
     PiBase.login('user');
-    expect(Space.create({name: 'New Space'})).to.be.rejectedWith('422');
+    expect(Space.create({name: 'New Space'})).to.be.rejectedWith(422);
   });
 
   it('requires admin access to update', function() {
     PiBase.login('user');
     Space.find(7).then(function(space) {
-      expect(space.update({description: 'Updated description'})).to.be.rejectedWith('403');
+      expect(space.update({description: 'Updated description'})).to.be.rejectedWith(403);
     });
   });
 
-  it.skip('allows admins to update', function() {
+  it('allows admins to update', function() {
     PiBase.login('admin');
     Space.find(7).then(function(space) {
       space.update({description: 'Updated description'}).then(function() {
@@ -60,19 +61,40 @@ describe('Space', function () {
     });
   });
 
-  it.skip('validates updates', function() {
+  it('validates updates', function() {
     PiBase.login('admin');
     Space.find(7).then(function(space) {
-      expect(space.update({description: ''})).to.be.rejectedWith('422');
-    });
-  });
-  it('tracks revisions');
-
-  it.skip('requires admin access to delete', function() {
-    Space.find(99).then(function(space) {
-      expect(space.delete()).to.be.rejectedWith('403');
+      expect(space.update({description: ''})).to.be.rejectedWith(422);
     });
   });
 
-  it('allows admins to delete');
+  it('tracks revisions', function() {
+    PiBase.login('admin');
+    Space.find(8).then(function(space) {
+      space.update({description: 'New description'}).then(function() {
+        space.update({description: 'Newer description'}).then(function() {
+          space.revisions().then(function(revisions) {
+            expect(revisions[0].body.description).to.eq('Newer description');
+            expect(revisions[1].body.description).to.eq('New description');
+          });
+        });
+      });
+    });
+  });
+
+  it('requires admin access to delete', function() {
+    Space.first().then(function(space) {
+      expect(space.delete()).to.be.rejectedWith(403);
+    });
+  });
+
+  it('allows admins to delete', function() {
+    PiBase.login('admin');
+
+    Space.first().then(function(space) {
+      space.delete().then(function() {
+        expect(Space.find(space.id)).to.be.rejectedWith(404);
+      });
+    });
+  });
 });
